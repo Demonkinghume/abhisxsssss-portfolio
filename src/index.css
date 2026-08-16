@@ -1,0 +1,78 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-heading: "Outfit", ui-sans-serif, system-ui, sans-serif;
+  --color-primary: #7c3aed;
+  --color-secondary: #3b82f6;
+  --color-background: #0a0a0a;
+  --text-3xl--line-height: 1.2;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    font-family: var(--font-sans);
+    color: var(--color-white);
+    background-color: #0a0a0a;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body ::selection,
+  body::selection {
+    background-color: color-mix(in oklab, var(--color-primary) 30%, transparent);
+    color: var(--color-white);
+  }
+}
+
+@utility text-gradient {
+  @apply bg-gradient-to-r from-[#7c3aed] to-[#3b82f6] bg-clip-text text-transparent;
+}
+
+@utility text-gradient-animated {
+  background: linear-gradient(90deg, #ff2a85, #8a2be2, #4169e1, #8a2be2, #ff2a85);
+  background-size: 200%;
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  animation: textGradient 4s linear infinite;
+}
+
+@utility bg-gradient {
+  @apply bg-gradient-to-r from-[#7c3aed] to-[#3b82f6];
+}
+
+@utility glass {
+  @apply border border-white/10 bg-white/5 shadow-[0_4px_30px_rgba(0,0,0,0.1)] backdrop-blur-md;
+}
+
+@utility glass-hover {
+  @apply transition-all duration-300 hover:border-white/20 hover:bg-white/10;
+}
+
+@utility hide-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+@keyframes textGradient {
+  to {
+    background-position: 200%;
+  }
+}
+
+@media (min-width: 768px) {
+  .cursor-none-desktop,
+  .cursor-none-desktop * {
+    cursor: none;
+  }
+}
