@@ -429,13 +429,49 @@ export const portfolio = {
     subtitle: "Brands, Communities & Clients I've Collaborated With",
   },
 
+  /* ------------------------------------------------------------------
+   *  11. CLIENTS  ("Worked With")
+   *      Each client has: name, role/projectType, image (DP/profile photo)
+   *      If image is provided, it displays their profile photo.
+   *      If image is empty (""), it falls back to the initial letter.
+   * ------------------------------------------------------------------ */
   clients: [
-    { name: "ADITYA", projectType: "Content Creation", logo: "", url: "" },
-    { name: "OURSMOKE", projectType: "Content Creation", logo: "", url: "" },
-    { name: "dev", projectType: "Content Creation", logo: "", url: "" },
-    { name: "kuma", projectType: "Content Creation", logo: "", url: "" },
-    { name: "jovan", projectType: "Content Creation", logo: "", url: "" },
-    { name: "AABID", projectType: "Content Creation", logo: "", url: "" },
+    {
+      name: "ADITYA",
+      role: "Content Creation",
+      image: "/assets/clients/aditya.jpg",
+      url: "",
+    },
+    {
+      name: "OURSMOKE",
+      role: "Content Creation",
+      image: "/assets/clients/oursmoke.jpg",
+      url: "",
+    },
+    {
+      name: "dev",
+      role: "Content Creation",
+      image: "/assets/clients/dev.jpg",
+      url: "",
+    },
+    {
+      name: "kuma",
+      role: "Content Creation",
+      image: "/assets/clients/kuma.jpg",
+      url: "",
+    },
+    {
+      name: "jovan",
+      role: "Content Creation",
+      image: "/assets/clients/jovan.jpg",
+      url: "",
+    },
+    {
+      name: "AABID",
+      role: "Content Creation",
+      image: "/assets/clients/aabid.jpg",
+      url: "",
+    },
   ],
 
   /* ------------------------------------------------------------------ *
@@ -471,21 +507,25 @@ export const portfolio = {
     /* Phone removed — leave "" and it disappears from the whole site */
     phone: "",
     location: "Delhi, India",
-    /* Form labels + button text */
+    /* Form labels + button text
+       This form uses Netlify Forms (form name: "hire-me").
+       No external API keys or services needed — Netlify handles
+       everything automatically after deployment. */
     form: {
       nameLabel: "Your Name",
       namePlaceholder: "John Doe",
       emailLabel: "Your Email",
       emailPlaceholder: "john@example.com",
+      projectTypeLabel: "Project Type",
+      projectTypePlaceholder: "e.g. YouTube Long Form, Shorts, Motion Graphics",
+      budgetLabel: "Budget",
+      budgetPlaceholder: "e.g. $200, $500, Negotiable",
       messageLabel: "Project Details",
-      messagePlaceholder: "Tell me about your project, timeline, and budget...",
+      messagePlaceholder: "Tell me about your project, timeline, and vision...",
       submitLabel: "Send Message",
-      /* Leave empty ("") to open the visitor's mail app.
-         Or paste a Formspree / Getform endpoint, e.g.
-         "https://formspree.io/f/xxxxxxx"  (no secret keys needed) */
-      endpoint: "",
-      successMessage: "Thanks! Your message is on its way.",
-      errorMessage: "Something went wrong. Please email me directly.",
+      successMessage:
+        "Thanks for reaching out! Your project inquiry has been sent. I'll get back to you soon.",
+      errorMessage: "Something went wrong. Please try again or email me directly.",
     },
   },
 

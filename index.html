@@ -24,6 +24,27 @@
     />
   </head>
   <body>
+    <!--
+      Hidden static form for Netlify Forms detection.
+      Netlify scans the built HTML at deploy time. React renders the real
+      visible form, but this hidden copy tells Netlify the form exists and
+      which fields it should expect. Do NOT remove this.
+    -->
+    <form
+      name="hire-me"
+      netlify
+      netlify-honeypot="bot-field"
+      hidden
+    >
+      <input type="hidden" name="form-name" value="hire-me" />
+      <input name="bot-field" />
+      <input name="name" />
+      <input name="email" />
+      <input name="projectType" />
+      <input name="budget" />
+      <textarea name="message"></textarea>
+    </form>
+
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>

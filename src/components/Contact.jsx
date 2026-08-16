@@ -15,6 +15,10 @@ export default function Contact() {
     setTimeout(() => setCopied(false), 2000);
   };
 
+  /* ------------------------------------------------------------------ */
+  /*  Netlify Forms submission handler                                    */
+  /*  Sends via fetch to avoid redirect. Shows success message in-page.  */
+  /* ------------------------------------------------------------------ */
   const handleSubmit = async (e) => {
     e.preventDefault();
     const form = e.currentTarget;
@@ -23,7 +27,7 @@ export default function Contact() {
     const email = String(data.get("email") || "").trim();
     const message = String(data.get("message") || "").trim();
 
-    /* --- simple validation --- */
+    /* --- client-side validation --- */
     if (!name || !email || !message) {
       setStatus({ state: "error", message: "Please fill in every field." });
       return;
@@ -33,31 +37,20 @@ export default function Contact() {
       return;
     }
 
-    /* --- Option A : an endpoint is configured (Formspree / Getform / ...) --- */
-    if (contact.form.endpoint) {
-      try {
-        setStatus({ state: "sending", message: "" });
-        const res = await fetch(contact.form.endpoint, {
-          method: "POST",
-          headers: { Accept: "application/json" },
-          body: data,
-        });
-        if (!res.ok) throw new Error("bad response");
-        form.reset();
-        setStatus({ state: "success", message: contact.form.successMessage });
-      } catch {
-        setStatus({ state: "error", message: contact.form.errorMessage });
-      }
-      return;
+    /* --- submit to Netlify Forms --- */
+    try {
+      setStatus({ state: "sending", message: "" });
+      const res = await fetch("/", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: new URLSearchParams(data).toString(),
+      });
+      if (!res.ok) throw new Error("Network response was not ok");
+      form.reset();
+      setStatus({ state: "success", message: contact.form.successMessage });
+    } catch {
+      setStatus({ state: "error", message: contact.form.errorMessage });
     }
-
-    /* --- Option B : no service configured -> open the mail app --- */
-    const subject = encodeURIComponent(`New Hire Me Entry from ${name}`);
-    const body = encodeURIComponent(
-      `Name: ${name}\nEmail: ${email}\n\nProject Details:\n${message}`
-    );
-    window.location.href = `mailto:${contact.email}?subject=${subject}&body=${body}`;
-    setStatus({ state: "success", message: contact.form.successMessage });
   };
 
   return (
@@ -69,7 +62,7 @@ export default function Contact() {
         <SectionTitle title={contact.title} subtitle={contact.subtitle} />
 
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-12 lg:gap-20 max-w-6xl mx-auto">
-          {/* ---------------- Details ---------------- */}
+          {/* ---------------- Details (left column) ---------------- */}
           <div className="lg:col-span-2 space-y-8">
             <motion.div
               initial={{ opacity: 0, x: -30 }}
@@ -153,14 +146,31 @@ export default function Contact() {
             </motion.div>
           </div>
 
-          {/* ---------------- Form ---------------- */}
+          {/* ---------------- Hire Me Form (right column) ---------------- */}
           <motion.div
             initial={{ opacity: 0, x: 30 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             className="lg:col-span-3 glass p-8 md:p-12 rounded-3xl relative"
           >
-            <form onSubmit={handleSubmit} noValidate className="space-y-6">
+            <form
+              name="hire-me"
+              method="POST"
+              data-netlify="true"
+              data-netlify-honeypot="bot-field"
+              onSubmit={handleSubmit}
+              noValidate
+              className="space-y-6"
+            >
+              {/* Netlify hidden fields */}
+              <input type="hidden" name="form-name" value="hire-me" />
+              <p className="hidden">
+                <label>
+                  Don't fill this out: <input name="bot-field" />
+                </label>
+              </p>
+
+              {/* Row 1: Name + Email */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 <div className="space-y-2">
                   <label
@@ -198,6 +208,41 @@ export default function Contact() {
                 </div>
               </div>
 
+              {/* Row 2: Project Type + Budget */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                <div className="space-y-2">
+                  <label
+                    htmlFor="projectType"
+                    className="text-sm font-medium text-gray-400 ml-1 block"
+                  >
+                    {contact.form.projectTypeLabel}
+                  </label>
+                  <input
+                    type="text"
+                    id="projectType"
+                    name="projectType"
+                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:bg-white/10 transition-all text-white"
+                    placeholder={contact.form.projectTypePlaceholder}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label
+                    htmlFor="budget"
+                    className="text-sm font-medium text-gray-400 ml-1 block"
+                  >
+                    {contact.form.budgetLabel}
+                  </label>
+                  <input
+                    type="text"
+                    id="budget"
+                    name="budget"
+                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:bg-white/10 transition-all text-white"
+                    placeholder={contact.form.budgetPlaceholder}
+                  />
+                </div>
+              </div>
+
+              {/* Row 3: Message */}
               <div className="space-y-2">
                 <label
                   htmlFor="message"
@@ -215,15 +260,19 @@ export default function Contact() {
                 />
               </div>
 
+              {/* Status messages */}
               {status.state === "error" && (
                 <p className="text-sm text-red-400" role="alert">
                   {status.message}
                 </p>
               )}
               {status.state === "success" && (
-                <p className="text-sm text-green-400" role="status">
-                  {status.message}
-                </p>
+                <div className="flex items-start gap-3 p-4 rounded-xl bg-green-500/10 border border-green-500/20">
+                  <Check className="w-5 h-5 text-green-400 shrink-0 mt-0.5" />
+                  <p className="text-sm text-green-400 leading-relaxed" role="status">
+                    {status.message}
+                  </p>
+                </div>
               )}
 
               <Button

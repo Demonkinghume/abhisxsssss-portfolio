@@ -21,6 +21,9 @@ export default function Clients() {
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 xl:grid-cols-6 gap-6 justify-items-center max-w-6xl mx-auto">
           {clients.map((client, i) => {
             const Wrapper = client.url ? "a" : "div";
+            const role = client.role || client.projectType || "Content Creation";
+            const dp = client.image || client.logo;
+
             return (
               <motion.div
                 key={client.name + i}
@@ -37,12 +40,12 @@ export default function Clients() {
                   className="group block w-full bg-[#120B1A] border border-white/10 hover:border-purple-500/40 group-hover:border-purple-500/40 rounded-2xl p-6 text-center transition-all duration-300 hover:bg-[#1A1025] hover:scale-105"
                 >
                   <div className="mx-auto mb-4 w-16 h-16 md:w-20 md:h-20 rounded-full overflow-hidden bg-black/50 border border-white/10 flex items-center justify-center group-hover:shadow-[0_0_25px_rgba(168,85,247,0.4)] transition-shadow duration-300">
-                    {client.logo ? (
+                    {dp ? (
                       <img
-                        src={client.logo}
+                        src={dp}
                         alt={client.name}
                         loading="lazy"
-                        className="w-full h-full object-cover"
+                        className="w-full h-full object-cover rounded-full"
                       />
                     ) : (
                       <span className="text-2xl font-heading font-bold text-gradient">
@@ -54,7 +57,7 @@ export default function Clients() {
                     {client.name}
                   </h3>
                   <p className="text-xs text-gray-500 mt-1 line-clamp-1">
-                    {client.projectType}
+                    {role}
                   </p>
                 </Wrapper>
               </motion.div>
